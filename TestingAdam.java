@@ -1,6 +1,6 @@
 import java.time.LocalDate;
 
-public class Main {
+public class TestingAdam {
     public static void main(String[] args) {
         System.out.println("=== Starting System Test for Module 1 ===\n");
 
@@ -48,7 +48,7 @@ class MockActivity extends Activity {
     private int mockPoints;
 
     public MockActivity(String id, String desc, int points) {
-        super(id, desc, LocalDate.now());
+        super(id, LocalDate.now(), desc);
         this.mockPoints = points;
     }
 
