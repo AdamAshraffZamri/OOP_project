@@ -39,4 +39,7 @@ public abstract class User {
     // Getters and Setters can be generated here via your IDE
     public String getFullName() { return fullName; }
     public String getUserId() { return userId; }
+    public String getEmail() { return email; }
+    public String getPhoneNo() { return phoneNo; }
+    public String getPassword() { return password; }
 }
