@@ -8,17 +8,22 @@ public class MedicineInventory {
         this.inventoryId = inventoryId ;
         this.medicineList = new ArrayList<>() ; 
     }
+
+    public String getInventoryId(){ 
+        return inventoryId ;
+    }
+
     public void addMedicine (Medicine medicine){
         medicineList.add(medicine);
     }
 
     public void removeMedicine (String medicineId){
-        medicineList.removeIf( m -> m.getMedicine().equals(medicineId)) ;
+        medicineList.removeIf( m -> m.getMedicineId().equals(medicineId)) ;
     }
 
     public void updateStock (String medicineId, int quantity){
         for (Medicine m : medicineList){
-            if (m.getMedicine().equals(medicineId)){
+            if (m.getMedicineId().equals(medicineId)){
                 m.increaseStock(quantity);
                 return ;
             }
@@ -27,7 +32,7 @@ public class MedicineInventory {
 
     public int checkStock (String medicineId){
         for (Medicine m : medicineList){
-            if (m.getMedicine().equals(medicineId)){
+            if (m.getMedicineId().equals(medicineId)){
                 return m.getStockQuantity();
             }            
         }
@@ -36,17 +41,18 @@ public class MedicineInventory {
 
     public void dispenseMedicine (String medicineId, int quantity) throws OutOfStockException{
         for (Medicine m : medicineList ){
-            if (m.getMedicine().equals(medicineId)){
+            if (m.getMedicineId().equals(medicineId)){
                 if (m.getStockQuantity() == 0){
                     throw new OutOfStockException("Medicine " + m.getMedicineName() + " is out of stock.") ; 
                 }
                 if (m.getStockQuantity() < quantity){
-                    throw new OutOfStockException("Not enough stock for the medicine " + m.getMedicine()) ; 
+                    throw new OutOfStockException("Not enough stock for the medicine " + m.getMedicineId()) ; 
                 }
                 m.reduceStock(quantity);
                 return ;
             }
         }
+        throw new OutOfStockException("Medicine ID " + medicineId + " not found.");
     }
 
     public ArrayList <Medicine> getMedicineList(){

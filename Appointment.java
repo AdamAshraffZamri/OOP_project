@@ -26,6 +26,14 @@ public class Appointment {
         this.status = status ;
     }
 
+    public String getAppointmentId (){ 
+        return appointmentId ;
+    }
+
+    public LocalTime getAppointmentTime (){ 
+        return appointmentTime ;
+    }
+
     public int getPriorityLevel (){
         return priorityLevel ;
     }
@@ -40,5 +48,10 @@ public class Appointment {
 
     public String getStatus (){
         return status ;
+    }
+
+    public void display() {
+        System.out.println("Appointment[" + appointmentId + ", " + appointmentDate + " " + appointmentTime +
+                ", resident=" + resident.getFullName() + ", priority=" + priorityLevel + ", status=" + status + "]");
     }
 }

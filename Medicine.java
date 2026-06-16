@@ -30,7 +30,7 @@ public class Medicine{
         return expiryDate.isBefore(LocalDate.now());
     }
 
-    public String getMedicine(){
+    public String getMedicineId(){
         return medicineId;
     } 
 
@@ -45,6 +45,15 @@ public class Medicine{
     public LocalDate getExpiryDate(){
         return expiryDate ;
     }
+
+    public void display() {
+    System.out.println( "Medicine{" +
+            "medicineId='" + medicineId + '\'' +
+            ", medicineName='" + medicineName + '\'' +
+            ", stockQuantity=" + stockQuantity +
+            ", expiryDate=" + expiryDate +
+            '}');
+}
 }
 
 //{}[]
