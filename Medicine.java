@@ -1,7 +1,6 @@
-//! temporary cuz i need this to test my module -- Noah
 import java.time.LocalDate;
 
-public class Medicine {
+public class Medicine{
     private String medicineId;
     private String medicineName;
     private int stockQuantity;
@@ -13,31 +12,47 @@ public class Medicine {
         this.stockQuantity = stockQuantity;
         this.expiryDate = expiryDate;
     }
+    public void increaseStock (int quantity){
+        this.stockQuantity += quantity ;
+    } 
 
-    public void increaseStock(int quantity) {
-        if (quantity > 0) {
-            this.stockQuantity += quantity;
+    public void reduceStock (int quantity ){
+        if (quantity > this.stockQuantity){
+            this.stockQuantity = 0;
+        }
+        else {
+            this.stockQuantity -= quantity ;
         }
     }
 
-    public void reduceStock(int quantity) {
-        if (quantity > 0 && quantity <= stockQuantity) {
-            this.stockQuantity -= quantity;
-        }
+    public boolean isExpired (){
+        return expiryDate.isBefore(LocalDate.now());
     }
 
-    public boolean isExpired() {
-        return LocalDate.now().isAfter(expiryDate);
+    public String getMedicineId(){
+        return medicineId;
+    } 
+
+    public String getMedicineName(){
+        return medicineName ;
+    } 
+
+    public int getStockQuantity(){
+        return stockQuantity ;
+    } 
+
+    public LocalDate getExpiryDate(){
+        return expiryDate ;
     }
 
-    public String getMedicineId() { return medicineId; }
-    public String getMedicineName() { return medicineName; }
-    public int getStockQuantity() { return stockQuantity; }
-    public LocalDate getExpiryDate() { return expiryDate; }
-    public void setStockQuantity(int qty) { this.stockQuantity = qty; }
-
-    @Override
-    public String toString() {
-        return medicineId + "," + medicineName + "," + stockQuantity + "," + expiryDate;
-    }
+    public void display() {
+    System.out.println( "Medicine{" +
+            "medicineId='" + medicineId + '\'' +
+            ", medicineName='" + medicineName + '\'' +
+            ", stockQuantity=" + stockQuantity +
+            ", expiryDate=" + expiryDate +
+            '}');
 }
+}
+
+//{}[]

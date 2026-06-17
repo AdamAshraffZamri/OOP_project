@@ -1,29 +1,31 @@
-//! temporary cuz i need this to test my module -- Noah
 import java.util.ArrayList;
 
 public class MedicineInventory {
-    private String inventoryId;
-    private ArrayList<Medicine> medicineList;
+    private String inventoryId ;
+    private ArrayList <Medicine> medicineList ;
 
-    public MedicineInventory(String inventoryId) {
-        this.inventoryId = inventoryId;
-        this.medicineList = new ArrayList<>();
+    public MedicineInventory( String inventoryId){
+        this.inventoryId = inventoryId ;
+        this.medicineList = new ArrayList<>() ; 
     }
 
-    public void addMedicine(Medicine medicine) {
+    public String getInventoryId(){ 
+        return inventoryId ;
+    }
+
+    public void addMedicine (Medicine medicine){
         medicineList.add(medicine);
-        System.out.println("Medicine added: " + medicine.getMedicineName());
     }
 
-    public void removeMedicine(String medicineId) {
-        medicineList.removeIf(m -> m.getMedicineId().equals(medicineId));
+    public void removeMedicine (String medicineId){
+        medicineList.removeIf( m -> m.getMedicineId().equals(medicineId)) ;
     }
 
-    public void updateStock(String medicineId, int quantity) {
-        for (Medicine m : medicineList) {
-            if (m.getMedicineId().equals(medicineId)) {
-                m.setStockQuantity(quantity);
-                return;
+    public void updateStock (String medicineId, int quantity){
+        for (Medicine m : medicineList){
+            if (m.getMedicineId().equals(medicineId)){
+                m.increaseStock(quantity);
+                return ;
             }
         }
     }
@@ -53,6 +55,8 @@ public class MedicineInventory {
         throw new OutOfStockException("Medicine not found in inventory: " + medicineId);
     }
 
-    public ArrayList<Medicine> getMedicineList() { return medicineList; }
-    public String getInventoryId() { return inventoryId; }
-}
+    public ArrayList<Medicine> getMedicineList() { 
+        return medicineList; 
+    }
+        
+}    
