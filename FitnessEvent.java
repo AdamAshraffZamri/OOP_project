@@ -75,4 +75,23 @@ public class FitnessEvent {
     public String getEventName() {
         return eventName;
     }
+
+    @Override
+    public String toString(){
+        String result= "Event ID    : "+ eventId+
+                        "\nEvent Name  : "+ eventName+
+                        "\nDate        : "+ eventDate+
+                        "\nLocation    : "+ location+
+                        "\nParticipants: " + participants.size()+ "/"+ maxParticipants+
+                        "\nStatus      : " + (isFull() ? "Full" : "Open");
+
+        if(!participants.isEmpty()){
+            result+= "\nRegistered  :";
+            for(Resident r : participants) {
+                result+= "\n  - " + r.getFullName();
+            }
+        }
+        return result;
+    }
+
 }

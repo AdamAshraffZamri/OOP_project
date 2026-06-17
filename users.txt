@@ -1,0 +1,4 @@
+R001,Noah Heng,noah@gmail.com,noah1234,011-11856068,Skudai1,100
+R002,Adam Ashraff,adam@gmail.com,adam1234,019-8043775,Skudai2,130
+R003,Jason,jason@gmail.com,jason1234,011-37064616,Skudai3,150
+R004,Faatihah,faatihah@gmail.com,faatihah1234,017-7947327,Skudai4,0

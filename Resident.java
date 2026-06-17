@@ -31,9 +31,17 @@ public class Resident extends User {
     // Attempts to redeem a reward using the resident's points
     public boolean redeemReward(Rewardable reward) {
         int cost = reward.getRequiredPoints();
-        if (account.deductPoints(cost)) {
+
+        if(account.getTotalPoints()<cost){
+            System.out.println("Redemption failed: Insufficient points.");
+            return false;
+        }
+
+        boolean success= reward.issueReward(this); // Tell the reward to issue itself
+
+        if (success) {
+            account.deductPoints(cost);
             issuedRewards.add(reward);
-            reward.issueReward(this); // Tell the reward to issue itself
             return true;
         }
         return false;
@@ -41,5 +49,13 @@ public class Resident extends User {
 
     public PointAccount getPointAccount() {
         return account;
+    }
+
+    public String getAddress(){
+        return address;
+    }
+
+    public int viewPoints() {
+        return account.getTotalPoints();
     }
 }
