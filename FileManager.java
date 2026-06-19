@@ -17,10 +17,19 @@ public class FileManager {
         try{ 
             FileWriter output= new FileWriter(userFileName);
 
-            for (User user:users){
-                if (user instanceof Resident){
+            for(User user:users){
+                if(user instanceof Resident){
                     Resident r= (Resident)user;
-                    String userInfo= r.getUserId()+ ","+ r.getFullName()+ ","+ r.getEmail()+ ","+ r.getPassword()+ ","+ r.getPhoneNo()+ ","+ r.getAddress()+ ","+ r.getPointAccount().getTotalPoints();
+                    String userInfo = "R," + r.getUserId()+ ","+ r.getFullName()+ ","+ r.getEmail()+ ","+ r.getPassword()+ ","+ r.getPhoneNo()+ ","+ r.getAddress()+ ","+ r.getPointAccount().getTotalPoints();
+                    output.write(userInfo+ System.lineSeparator());
+                } else if(user instanceof Admin){
+                    Admin a= (Admin)user;
+                    String userInfo = "A," + a.getUserId()+ ","+ a.getFullName()+ ","+ a.getEmail()+ ","+ a.getPassword()+ ","+ a.getPhoneNo()+ ",Admin";
+                    output.write(userInfo+ System.lineSeparator());
+                } else if(user instanceof ClinicStaff){
+                    ClinicStaff s= (ClinicStaff)user;
+                    //! later check if the last info can be like general stuff cuz it seems too specific something
+                    String userInfo = "S," + s.getUserId()+ ","+ s.getFullName()+ ","+ s.getEmail()+ ","+ s.getPassword()+ ","+ s.getPhoneNo()+ ",ST-001,Nurse";
                     output.write(userInfo+ System.lineSeparator());
                 }
             }
@@ -53,26 +62,21 @@ public class FileManager {
                     continue;
                 }
 
-                String[] parts = content.split(",", 7); // 7 fields
-                if (parts.length < 7) {
-                    System.out.println("ERROR: incomplete user data -> " + content);
-                    continue;
-                }
+                String[] parts = content.split(",");
+                String role= parts[0];
 
-                String userId   = parts[0];
-                String fullName = parts[1];
-                String email    = parts[2];
-                String password = parts[3];
-                String phoneNo  = parts[4];
-                String address  = parts[5];
-                int totalPoints = Integer.parseInt(parts[6]);
-
-                Resident resident = new Resident(userId, fullName, email, password, phoneNo, address);
-                //! Restore the points
-                if (totalPoints > 0){
-                    resident.getPointAccount().addPoints(totalPoints);
+                if (role.equals("R") && parts.length >= 8) {
+                    Resident resident = new Resident(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]);
+                    int totalPoints = Integer.parseInt(parts[7]);
+                    if (totalPoints > 0){
+                        resident.getPointAccount().addPoints(totalPoints);
+                    }
+                    users.add(resident);
+                } else if (role.equals("A") && parts.length >= 7) {
+                    users.add(new Admin(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6]));
+                } else if (role.equals("S") && parts.length >= 8) {
+                    users.add(new ClinicStaff(parts[1], parts[2], parts[3], parts[4], parts[5], parts[6], parts[7]));
                 }
-                users.add(resident);
             }
             input.close();
             System.out.println("Loaded "+ users.size()+" user(s) from "+ userFileName+ "...");

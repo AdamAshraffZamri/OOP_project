@@ -7,6 +7,7 @@ import java.util.Scanner;
 public class Main {
     private static Scanner scanner = new Scanner(System.in);
     private static ArrayList<User> users = new ArrayList<>();
+    private static ArrayList<Rewardable> rewardPool = new ArrayList<>();
     private static User currentUser = null;
     private static FileManager fileManager = new FileManager("users.txt", "medicine.txt");
     private static CommunityClinic clinic = new CommunityClinic("CL-001", "EcoHealth Clinic", "123 Green Ave");
@@ -29,6 +30,11 @@ public class Main {
         }
         if (!hasStaff) {
             users.add(new ClinicStaff("S001", "Primary Nurse", "staff@clinic.com", "staff123", "00-01", "ST-001", "Nurse"));
+        }
+
+        if (rewardPool.isEmpty()) {
+            rewardPool.add(new Voucher("V1", "CODE1", "RM10 Off Groceries", 100, LocalDate.now().plusMonths(1)));
+            rewardPool.add(new ClinicPriorityReward("P1", 150, 1));
         }
 
         boolean running = true;
@@ -93,7 +99,7 @@ public class Main {
     }
 
     private static void showResidentMenu(Resident resident) {
-        System.out.println("\n=== Resident: " + resident.getFullName() + " ===");
+        System.out.println("\n=== Resident: " + resident.getFullName() + " | Points: " + resident.viewPoints() + " ===");
         System.out.println("1. Log Activity");
         System.out.println("2. Join Fitness Event");
         System.out.println("3. Book Clinic Appointment");
@@ -161,14 +167,40 @@ public class Main {
                 leaderboard.displayRanking();
                 break;
             case 5:
-                 System.out.println("1. Voucher (100pt)  2. Clinic Priority (150pt)");
-                 int rew = getIntInput();
-                 if (rew == 1) {
-                     resident.redeemReward(new Voucher("V1", "CODE1", "Voucher", 100, LocalDate.now().plusMonths(1)));
-                 } else if (rew == 2) {
-                     resident.redeemReward(new ClinicPriorityReward("P1", 150, 1));
-                 }
-                 break;
+                System.out.println("=== Available Rewards ===");
+                for (int idx = 0; idx < rewardPool.size(); idx++) {
+                    Rewardable r = rewardPool.get(idx);
+                    String type = (r instanceof Voucher) ? "Voucher" : "Clinic Priority";
+                    System.out.println(idx + ". " + type + " (" + r.getRequiredPoints() + " pts)");
+                }
+                System.out.print("Select Reward to Redeem: ");
+                int rewIdx = getIntInput();
+
+                if (rewIdx >= 0 && rewIdx < rewardPool.size()) {
+                    Rewardable selectedReward = rewardPool.get(rewIdx);
+                    boolean success = resident.redeemReward(selectedReward);
+                    
+                    if (success && selectedReward instanceof ClinicPriorityReward) {
+                        System.out.print("Enter your Appointment ID to apply this priority: ");
+                        String apptId = scanner.nextLine().trim();
+                        boolean found = false;
+                        
+                        for (Appointment ap : clinic.viewAppointments()) {
+                            // Check ID and ensure the appointment actually belongs to this resident
+                            if (ap.getAppointmentId().equals(apptId) && ap.getResident().getUserId().equals(resident.getUserId())) {
+                                ((ClinicPriorityReward) selectedReward).applyToAppointment(ap);
+                                found = true;
+                                break;
+                            }
+                        }
+                        if (!found) {
+                            System.out.println("Appointment ID not found or doesn't belong to you. Priority saved for later.");
+                        }
+                    }
+                } else {
+                    System.out.println("Invalid selection.");
+                }
+                break;
             case 6:
                 currentUser.logout();
                 currentUser = null;
@@ -203,8 +235,14 @@ public class Main {
                 System.out.println("Find resident to issue Voucher");
                 break;
             case 4:
-                for(FitnessEvent fe : center.getFitnessEvents()) {
-                    System.out.println(fe.getEventId() + " - " + fe.getEventName());
+                ArrayList<FitnessEvent> currentEvents= center.getFitnessEvents();
+                if(currentEvents.isEmpty()){
+                    System.out.println("No fitness events are available for now!!");
+                } else{
+                    System.out.println("== Center Events ==");
+                    for(FitnessEvent fe : center.getFitnessEvents()) {
+                        System.out.println(fe.getEventId() + " - " + fe.getEventName());
+                    }
                 }
                 break;
             case 5:
