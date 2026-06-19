@@ -1,0 +1,8 @@
+RESIDENT,R001,Noah Heng,noah@gmail.com,noah1234,011-11856068,Skudai1,100
+RESIDENT,R002,Adam Ashraff,adam@gmail.com,adam1234,019-8043775,Skudai2,130
+RESIDENT,R003,Jason,jason@gmail.com,jason1234,011-37064616,Skudai3,150
+RESIDENT,R004,Faatihah,faatihah@gmail.com,faatihah1234,017-7947327,Skudai4,0
+RESIDENT,123,chew,chew@gmail.com,123321,0199999999,123,jalan lanjut 12,0
+ADMIN,A001,System Administrator,admin@admin.com,admin123,011-9990000,SuperAdmin
+STAFF,S001,Primary Nurse,staff@clinic.com,staff123,012-9000000,ST-001,Nurse
+RESIDENT,A2003,jason,jy@gmail.con,123456,011-9999999,jalan lanjut 14,15
