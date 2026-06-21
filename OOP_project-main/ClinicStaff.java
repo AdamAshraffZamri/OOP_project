@@ -18,7 +18,7 @@ public class ClinicStaff extends User {
 
     public Appointment bookAppointment(CommunityClinic clinic, Resident resident,
                                        LocalDate appointmentDate, LocalTime appointmentTime) {
-        String appointmentId = "APT-" + resident.getUserId() + "-" + appointmentDate + "-" + appointmentTime;
+        String appointmentId = Main.generateAppointmentId();
         Appointment appointment = new Appointment(appointmentId, appointmentDate, appointmentTime, resident);
         clinic.addAppointment(appointment);
         return appointment;

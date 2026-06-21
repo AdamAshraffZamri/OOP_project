@@ -470,12 +470,13 @@ public class Main {
         printHeader("Clinic Staff Menu - " + staff.getFullName());
         System.out.println("1. View Profile");
         System.out.println("2. View Appointments");
-        System.out.println("3. Update Appointment Priority");
-        System.out.println("4. Add Medicine to Stock");
-        System.out.println("5. Dispense Medicine");
-        System.out.println("6. Display Medicine Inventory");
-        System.out.println("7. Change Password");
-        System.out.println("8. Logout");
+        System.out.println("3. Book Patient Appointment");
+        System.out.println("4. Update Appointment Priority");
+        System.out.println("5. Add Medicine to Stock");
+        System.out.println("6. Dispense Medicine");
+        System.out.println("7. Display Medicine Inventory");
+        System.out.println("8. Change Password");
+        System.out.println("9. Logout");
 
         switch (readMenuOption("Enter your option: ")) {
             case 1:
@@ -485,27 +486,66 @@ public class Main {
                 displayAllAppointments();
                 break;
             case 3:
-                updateAppointmentPriority(staff);
+                bookPatientAppointment(staff);
                 break;
             case 4:
-                addOrUpdateMedicine();
+                updateAppointmentPriority(staff);
                 break;
             case 5:
-                dispenseMedicine();
+                addOrUpdateMedicine();
                 break;
             case 6:
-                clinic.getMedicineInventory().display();
+                dispenseMedicine();
                 break;
             case 7:
-                changePassword(staff);
+                clinic.getMedicineInventory().display();
                 break;
             case 8:
+                changePassword(staff);
+                break;
+            case 9:
                 currentUser.logout();
                 currentUser = null;
                 break;
             default:
                 System.out.println("Invalid option. Please try again.");
         }
+    }
+
+    private static void bookPatientAppointment(ClinicStaff staff) {
+        ArrayList<Resident> residents = getResidents();
+        if (residents.isEmpty()) {
+            System.out.println("No residents available.");
+            return;
+        }
+
+        displayResidents(residents);
+        Resident resident = findResidentByIdOrEmailWithRetry("Enter resident ID or email, or 0 to go back: ");
+        if (resident == null) {
+            return;
+        }
+
+        LocalDate appointmentDate = readFlexibleDateOrCancel("Enter date (YYYY-MM-DD) or 0 to cancel: ");
+        if (appointmentDate == null) {
+            System.out.println("Appointment booking cancelled.");
+            return;
+        }
+
+        LocalTime appointmentTime = readFlexibleTimeOrCancel("Enter time (HH:mm) or 0 to cancel: ");
+        if (appointmentTime == null) {
+            System.out.println("Appointment booking cancelled.");
+            return;
+        }
+
+        Appointment appointment = staff.bookAppointment(clinic, resident, appointmentDate, appointmentTime);
+        printHeader("Appointment Booked");
+        System.out.println("Appointment ID : " + appointment.getAppointmentId());
+        System.out.println("Resident       : " + appointment.getResident().getFullName());
+        System.out.println("Date           : " + appointment.getAppointmentDate());
+        System.out.println("Time           : " + appointment.getAppointmentTime());
+        System.out.println("Priority Level : " + appointment.getPriorityLevel());
+        System.out.println("Status         : " + appointment.getStatus());
+        System.out.println("====================================");
     }
 
     private static void updateAppointmentPriority(ClinicStaff staff) {
@@ -979,6 +1019,10 @@ public class Main {
             }
             LocalDate date = parseFlexibleDate(input);
             if (date != null) {
+                if (date.isBefore(LocalDate.now())) {
+                    System.out.println("Appointment date cannot be in the past. Please enter today or a future date.");
+                    continue;
+                }
                 return date;
             }
             System.out.println("Invalid date format. Please enter again.");
@@ -1120,7 +1164,7 @@ public class Main {
         }
     }
 
-    private static String generateAppointmentId() {
+    static String generateAppointmentId() {
         String appointmentId;
         do {
             appointmentId = String.format("APT%03d", appointmentCounter);
